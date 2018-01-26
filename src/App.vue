@@ -22,6 +22,22 @@ export default {
 </script>
 
 <style lang="scss">
+body {
+  margin: 0;
+  padding: 0;
+  padding-top: 55px;
+  background-color: #f2f3f5;
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+}
+
+a, body {
+  color: #34495e;
+}
+
+a {
+  text-decoration: none;
+}
+
 .header {
   width: 100%;
   height: 55px;
@@ -54,7 +70,9 @@ export default {
 
     .user {
       float: right;
+      margin-right: 0;
       opacity: 1;
+      text-align: right;
     }
 
     .router-link-active {

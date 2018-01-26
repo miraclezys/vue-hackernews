@@ -6,7 +6,7 @@
       <a>more&gt;</a>
     </div>
     <ul class="news-list">
-      <my-item :item="item" v-for="item in itemData" :key="item.id"></my-item>
+      <my-item :item="item" v-for="item in stories" :key="item.id"></my-item>
     </ul>
   </div>
 </template>
@@ -21,31 +21,30 @@ export default {
   },
   data () {
     return {
-      itemNum: [],
-      itemData: [],
-      itemSeq: {}
+      storyIds: [],
+      stories: []
     }
   },
   created: async function () {
-    await this.getSeq()
-    await this.
+    await this.getStoryIds()
+    await this.getPageData(1)
   },
   methods: {
-    getSeq: async function () {
+    getStoryIds: async function () {
       try {
         const response = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty')
-        this.itemNum = response.json()
-        for (let i = 0; i < this.itemNum.length; i++) {
-          this.itemSeq[this.itemNum[i]] = i
-        }
+        this.storyIds = await response.json()
       } catch (error) {
         console.log(error)
       }
     },
-    getData: async function (num) {
+    getPageData: async function (pageIndex) {
       try {
-        const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${num}.json?print=pretty`)
-        this.itemData[this.itemSeq[num]] = response.json()
+        const pageSize = 20
+        const requests = this.storyIds.slice((pageIndex - 1) * pageSize, pageIndex * pageSize)
+          .map(id => fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`))
+        const response = await Promise.all(requests)
+        this.stories = await Promise.all(response.map(res => res.json()))
       } catch (error) {
         console.log(error)
       }

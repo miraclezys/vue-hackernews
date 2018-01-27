@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import HelloWorld from '@/components/HelloWorld'
+import HelloWorld from '@/components/HelloWorld'
 import TestWorld from '@/components/TestWorld'
 import ItemList from '@/views/ItemList'
 
@@ -11,12 +11,12 @@ export default new Router({
     {
       path: '/',
       name: 'Item',
-      component: ItemList
+      component: HelloWorld
     },
     {
       path: '/foo',
       name: 'TestWord',
-      component: TestWorld
+      component: ItemList
     },
     {
       path: '/fcc',

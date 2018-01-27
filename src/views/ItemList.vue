@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import Item from '@/components/Item'
+import Item from '@/components/StoryItem'
 
 export default {
   name: 'ItemList',

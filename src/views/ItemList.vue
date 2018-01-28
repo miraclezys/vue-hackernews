@@ -40,14 +40,23 @@ export default {
     },
     getPageData: async function (pageIndex) {
       try {
-        const pageSize = 20
+        const pageSize = 3
         const requests = this.storyIds.slice((pageIndex - 1) * pageSize, pageIndex * pageSize)
           .map(id => fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`))
         const response = await Promise.all(requests)
-        this.stories = await Promise.all(response.map(res => res.json()))
+        const stories = await Promise.all(response.map(res => res.json()))
+        this.stories = this.processStories(stories)
       } catch (error) {
         console.log(error)
       }
+    },
+    processStories: function (stories) {
+      return stories.map(story => ({
+        ...story,
+        website: /https?:\/\/(.*?)\//.exec(story.url)[1],
+        commentNum: story.kids instanceof Array ? story.kids.length : 0,
+        showTime: (new Date(story.time * 1000)).toDateString()
+      }))
     }
   }
 }

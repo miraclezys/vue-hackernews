@@ -2,13 +2,13 @@
   <li class="item">
     <span class="item-num">{{ item.score }}</span>
     <span class="item-title">
-      <a :href="item.link">{{ item.title }}</a>
+      <a :href="item.url">{{ item.title }}</a>
       <span>({{ item.website }})</span>
     </span>
     <br>
     <span class="item-meta">
-      by&nbsp;<a :href="item.authorLink">{{ item.authorName }}</a>&nbsp;
-      {{ item.time }}&nbsp;|&nbsp;
+      by&nbsp;<a :href="item.authorLink">{{ item.by }}</a>&nbsp;
+      {{ item.showTime }}&nbsp;|&nbsp;
       <a :href="item.commentLink">{{ item.commentNum }}&nbsp;comments</a>
     </span>
   </li>

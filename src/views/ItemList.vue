@@ -54,7 +54,7 @@ export default {
       return stories.map(story => ({
         ...story,
         website: /https?:\/\/(.*?)\//.exec(story.url)[1],
-        commentNum: story.kids instanceof Array ? story.kids.length : 0,
+        commentNum: story.kids.length,
         showTime: (new Date(story.time * 1000)).toDateString()
       }))
     }

@@ -2,8 +2,8 @@
   <div class="news-view">
     <div class="page">
       <a>&lt;prev</a>&nbsp;
-      <span>1/19</span>&nbsp;
-      <a>more&gt;</a>
+      <span>{{ pageIndex }}/{{ pageSum }}</span>&nbsp;
+      <router-link :to="'/' + $route.name + '/' + (pageIndex + 1)">more&gt;</router-link>
     </div>
     <ul class="news-list">
       <my-item :item="item" v-for="item in stories" :key="item.id"></my-item>
@@ -22,12 +22,16 @@ export default {
   data () {
     return {
       storyIds: [],
-      stories: []
+      stories: [],
+      pageSize: 3,
+      pageIndex: this.$route.params.page ? parseInt(this.$route.params.page) : 1,
+      pageSum: ''
     }
   },
   created: async function () {
     await this.getStoryIds()
-    await this.getPageData(1)
+    await this.getPageData(this.pageIndex)
+    console.log(this.$router)
   },
   methods: {
     getStoryIds: async function () {
@@ -40,12 +44,13 @@ export default {
     },
     getPageData: async function (pageIndex) {
       try {
-        const pageSize = 3
-        const requests = this.storyIds.slice((pageIndex - 1) * pageSize, pageIndex * pageSize)
+        const requests = this.storyIds.slice((pageIndex - 1) * this.pageSize, pageIndex * this.pageSize)
           .map(id => fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`))
         const response = await Promise.all(requests)
         const stories = await Promise.all(response.map(res => res.json()))
         this.stories = this.processStories(stories)
+        this.pageSum = Math.ceil(this.storyIds.length / this.pageSize)
+        console.log(stories, this.stories, this.pageSum)
       } catch (error) {
         console.log(error)
       }
@@ -54,6 +59,7 @@ export default {
       return stories.map(story => ({
         ...story,
         website: /https?:\/\/(.*?)\//.exec(story.url)[1],
+        authorLink: '/user/' + story.by,
         commentNum: story.kids.length,
         showTime: (new Date(story.time * 1000)).toDateString()
       }))

@@ -49,7 +49,7 @@ a {
 
   .header-nav {
     margin: 0 auto;
-    padding: 15px 0;
+    padding: 15px 30px;
     max-width: 800px;
 
     a {

@@ -14,13 +14,13 @@ export default new Router({
       component: HelloWorld
     },
     {
-      path: '/foo',
-      name: 'TestWord',
+      path: '/foo/:page(\\d+)?',
+      name: 'foo',
       component: ItemList
     },
     {
-      path: '/fcc',
-      name: 'TestWord2',
+      path: '/fcc/:id',
+      name: 'TestWorld',
       component: TestWorld
     }
   ]

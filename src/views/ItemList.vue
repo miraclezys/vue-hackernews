@@ -33,6 +33,11 @@ export default {
     await this.getPageData(this.pageIndex)
     console.log(this.$router)
   },
+  watch: {
+    '$route' (to, from) {
+      console.log(to, from)
+    }
+  },
   methods: {
     getStoryIds: async function () {
       try {

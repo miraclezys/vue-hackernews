@@ -1,9 +1,9 @@
 <template>
   <div class="news-view">
     <div class="page">
-      <a>&lt;prev</a>&nbsp;
+      <a v-if="pageIndex > 1">&lt;prev</a>&nbsp;
       <span>{{ pageIndex }}/{{ pageSum }}</span>&nbsp;
-      <router-link :to="'/' + $route.name + '/' + (pageIndex + 1)">more&gt;</router-link>
+      <router-link v-if="pageIndex < pageSum" :to="'/' + $route.name + '/' + (pageIndex + 1)">more&gt;</router-link>
     </div>
     <ul class="news-list">
       <my-item :item="item" v-for="item in stories" :key="item.id"></my-item>
@@ -24,25 +24,32 @@ export default {
       storyIds: [],
       stories: [],
       pageSize: 3,
-      pageIndex: this.$route.params.page ? parseInt(this.$route.params.page) : 1,
-      pageSum: ''
+      pageSum: '',
+      pageIndex: 1
     }
   },
   created: async function () {
     await this.getStoryIds()
     await this.getPageData(this.pageIndex)
-    console.log(this.$router)
   },
   watch: {
     '$route' (to, from) {
-      console.log(to, from)
+      if (!to.params.page || to.params.page < 0 || to.params.page > this.pageSum) {
+        this.pageIndex = 1
+      } else {
+        this.pageIndex = parseInt(to.params.page)
+      }
+      this.getPageData(this.pageIndex)
     }
+  },
+  computed: {
   },
   methods: {
     getStoryIds: async function () {
       try {
         const response = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty')
         this.storyIds = await response.json()
+        this.pageSum = Math.ceil(this.storyIds.length / this.pageSize)
       } catch (error) {
         console.log(error)
       }
@@ -54,8 +61,6 @@ export default {
         const response = await Promise.all(requests)
         const stories = await Promise.all(response.map(res => res.json()))
         this.stories = this.processStories(stories)
-        this.pageSum = Math.ceil(this.storyIds.length / this.pageSize)
-        console.log(stories, this.stories, this.pageSum)
       } catch (error) {
         console.log(error)
       }
